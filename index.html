@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Analysis Web Application</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="light-theme">
+    <div class="container">
+       <header>
+            <div class="header-container">
+                <h1 class="header-title">Stock Analysis Web Application</h1>
+                <div class="header-icons">
+                    <button id="tutorialButton" class="header-icon" title="Show Tutorial">
+                        <i class="fas fa-question-circle"></i>
+                    </button>
+                    <button id="themeToggle" class="header-icon" title="Toggle Theme">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <div class="tutorial-modal" id="tutorialModal">
+            <div class="tutorial-content">
+                <h2>Welcome to Stock Analysis Web Application</h2>
+                <div class="tutorial-slide active" data-slide="1">
+                    <p>This application allows you to analyze stock data with various tools and features.</p>
+                    <p>Start by searching for a stock symbol or company name.</p>
+                </div>
+                <div class="tutorial-slide" data-slide="2">
+                    <p>View historical data in line or bar charts and select your desired timeframe.</p>
+                </div>
+                <div class="tutorial-slide" data-slide="3">
+                    <p>Technical indicators like Moving Averages, RSI, and MACD are automatically displayed.</p>
+                </div>
+                <div class="tutorial-slide" data-slide="4">
+                    <p>Use drawing tools to mark trends, add notes, and analyze price movements.</p>
+                </div>
+                <div class="tutorial-slide" data-slide="5">
+                    <p>Save stocks to your watchlist for easy monitoring and access.</p>
+                </div>
+                <div class="tutorial-slide" data-slide="6">
+                    <p>You're all set! Start exploring the Stock Analysis Web Application.</p>
+                    <p>Click "Finish" to begin your analysis journey.</p>
+                </div>
+                <div class="tutorial-buttons">
+                    <button id="prevSlide" disabled>Previous</button>
+                    <button id="nextSlide">Next</button>
+                    <button id="finishTutorial" style="display: none;">Finish</button>
+                    <button id="skipTutorial">Skip Tutorial</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="search-section">
+            <div class="search-container">
+                <input type="text" id="stockSearch" placeholder="Search by company name or symbol (e.g., AAPL or Apple)">
+                <button id="searchButton"><i class="fas fa-search"></i> Search</button>
+                <div class="search-results" id="searchResults"></div>
+            </div>
+            <div class="date-range">
+                <div class="date-input">
+                    <label for="startDate">From:</label>
+                    <input type="text" id="startDate" placeholder="Select start date">
+                </div>
+                <div class="date-input">
+                    <label for="endDate">To:</label>
+                    <input type="text" id="endDate" placeholder="Select end date">
+                </div>
+                <button id="applyDateRange">Apply</button>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="dashboard-section">
+                <div class="dashboard-cards" id="dashboardCards">
+                    <div class="welcome-message">
+                        <h2>Welcome to Stock Analysis</h2>
+                        <p>Search for a stock to begin your analysis</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-section">
+                <div class="chart-header">
+                    <h2 id="chartTitle">Stock Chart</h2>
+                    <div class="chart-controls">
+                        <select id="chartType">
+                            <option value="line">Line Chart</option>
+                            <option value="bar">Bar Chart</option> <!-- Changed from "candlestick" to "bar" -->
+                        </select>
+                        <button id="downloadChart"><i class="fas fa-download"></i> Download</button>
+                        <button id="drawLineTool"><i class="fas fa-pencil-ruler"></i> Draw Line</button>
+                        <button id="addNoteTool"><i class="fas fa-sticky-note"></i> Add Note</button>
+                        <button id="clearDrawings"><i class="fas fa-trash-alt"></i> Clear</button>
+                    </div>
+                </div>
+                <div class="charts-wrapper">
+                    <div class="chart-container">
+                        <div id="mainChart"></div>
+                    </div>
+                    <div class="chart-header">  
+                        <h2 id="chartTitle"> Basic Analytical Indicators</h2>
+                        <div class="chart-controls">
+                            <button id="downloadIndicators"><i class="fas fa-download"></i> Download</button>
+                        </div>
+                    </div>
+                    <div class="indicators-chart">
+                        <div id="indicatorsChart"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="data-section">
+                <div class="data-header">
+                    <h2>Stock Data</h2>
+                    <div class="data-controls">
+                        <input type="text" id="dataFilter" placeholder="Filter data...">
+                        <button id="sortPrice">Sort by Price</button>
+                        <button id="sortDate">Sort by Date</button>
+                        <button class="chart-controls" id="exportCSV"><i class="fas fa-download"></i>Export CSV</button>
+                        <button class="chart-controls" id="exportJSON"><i class="fas fa-download"></i>Export JSON</button>
+                    </div>
+                </div>
+                <div class="data-table-container">
+                    <table id="stockDataTable">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Open</th>
+                                <th>High</th>
+                                <th>Low</th>
+                                <th>Close</th>
+                                <th>Volume</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="prediction-section">
+                <h2>Price Prediction</h2>
+                <div class="prediction-content">
+                    <div class="prediction-input">
+                        <label for="predictionDays">Days to predict:</label>
+                        <input type="number" id="predictionDays" min="1" max="30" value="7">
+                        <button id="predictButton">Generate Prediction</button>
+                        <button class="chart-controls" id="downloadPrediction"><i class="fas fa-download"></i>Download Prediction (PNG)</button>
+                    </div>
+                    <div id="predictionResult"></div>
+                    <div id="predictionChart"></div>
+                </div>
+            </div>
+
+            <div class="watchlist-section">
+                <h2>My Watchlist <button id="addToWatchlist" style="display: none;"><i class="fas fa-plus"></i> Add Current Stock</button></h2>
+                <div class="watchlist-container" id="watchlistContainer">
+                    <p class="empty-watchlist">Your watchlist is empty. Add stocks to monitor them here.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="error-modal" id="errorModal">
+        <div class="error-content">
+            <span class="close-error">&times;</span>
+            <h3>Error</h3>
+            <p id="errorMessage"></p>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 Stock Analysis Web Application. Created By: YAP YEEN VEEN 1211108457</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lightweight-charts@3.8.0/dist/lightweight-charts.standalone.production.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
